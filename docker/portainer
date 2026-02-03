@@ -1,0 +1,16 @@
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:lts
+    restart: unless-stopped
+    networks:
+      - portainer_net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/surya/Docker/Portainer/data:/data
+    ports:
+      - 9443:9443
+
+networks:
+  portainer_net:
+    external: true
