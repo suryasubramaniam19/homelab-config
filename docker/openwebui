@@ -1,0 +1,16 @@
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - ai_net
+    restart: unless-stopped
+    ports:
+      - "3020:8080"
+    volumes:
+      - /home/surya/Docker/OpenWebUI/data:/app/backend/data
+
+networks:
+  ai_net:
+    external: true
