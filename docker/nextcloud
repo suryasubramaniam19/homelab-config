@@ -1,0 +1,53 @@
+services:
+  db:
+    image: mariadb:lts
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - nextcloud_net
+    container_name: nextcloud-compose-db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED
+    volumes:
+      - ${DB_DATA_LOCATION}:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PW}
+      - MYSQL_PASSWORD=${DB_PW}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=${DB_USER}
+
+  redis:
+    image: redis:alpine
+    #user: "1000:1000"
+    restart: always
+    networks:
+      - nextcloud_net
+    security_opt:
+      - no-new-privileges:true
+
+  app:
+    image: nextcloud
+    container_name: nextcloud-compose
+    restart: always
+    networks:
+      - nextcloud_net
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 12000:80
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - ${NEXTCLOUD_LIBRARY}:/var/www/html
+    environment:
+      - MYSQL_PASSWORD=${DB_PW}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_HOST=db
+      - NEXTCLOUD_DEFAULT_PHONE_REGION=US
+      - NEXTCLOUD_TRUSTED_DOMAINS=${TRUSTED_DOMAINS}
+
+networks:
+  nextcloud_net:
+    external: true
