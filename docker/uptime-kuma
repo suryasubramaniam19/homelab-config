@@ -1,0 +1,15 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - uptime-kuma_net
+    volumes:
+      - /home/surya/Docker/Uptime-Kuma/data:/app/data
+    ports:
+      - "3001:3001"
+networks:
+  uptime-kuma_net:
+    external: true
