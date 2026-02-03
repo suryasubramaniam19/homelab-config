@@ -1,0 +1,20 @@
+services:
+  convertx:
+    image: ghcr.io/c4illin/convertx
+    container_name: convertx
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+      - "8081:3000"
+    environment:
+      - JWT_SECRET=aLongAndSecretStringUsedToSignTheJSONWebToken1234 # will use randomUUID if unset
+      - HTTP_ALLOWED=true
+    volumes:
+      - /home/surya/Docker/ConvertX/data:/app/data
+    networks:
+      - convertx_net
+
+networks:
+  convertx_net:
+    external: true
