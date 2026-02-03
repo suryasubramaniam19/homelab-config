@@ -1,0 +1,22 @@
+services:
+  syncthing:
+    environment:
+      - PGID=544
+      - PUID=568
+      - TZ=America/Chicago
+      - STGUIADDRESS=0.0.0.0:20910
+    image: syncthing/syncthing
+    networks:
+      - lan_only
+    ports:
+      - '20910:20910'
+      - 22000:22000/tcp
+      - 22000:22000/udp
+    restart: unless-stopped
+    volumes:
+      - /mnt/data:/data
+      - /mnt/data/Services/Docker/Syncthing/config:/var/syncthing
+      
+networks:
+  lan_only:
+    external: True
