@@ -5,19 +5,24 @@
 *   **Memory:** 48 GB DDR4 2666 MHz (Non-ECC).
 *   **Network:** Intel i350 Dual-Port Gigabit NIC + Onboard Intel NIC.
 *   **Storage Tiering:**
-    *   **Boot:** 256 GB NVMe.
-    *   **VM Storage:** 1 TB NVMe (ZFS).
+    *   **Boot:** 256 GB NVMe (Proxmox Host).
+    *   **VM Storage:** 1 TB NVMe (ZFS Encrypted Pool).
     *   **Mass Storage:** 3x 2TB HDD (ZFS RAIDZ1 passed to TrueNAS).
+    *   **Backup:** External USB HDD (PASSTHROUGH to PBS).
 
 ## Resource Overcommitment Strategy
-I utilize a documented overprovisioning strategy (approx 2.5:1 vCPU ratio) managing 4 physical cores against ~10 allocated vCPUs.
+I utilize a widespread overprovisioning strategy (approx 3:1 vCPU ratio), managing 4 physical cores against various workloads.
 
-| VM | vCPUs | RAM Assignment | Primary Function |
-| :--- | :--- | :--- | :--- |
-| **Proxmox (Host)** | Reserved | 1 GB (ARC) + 1 GB (System) | Hypervisor & ZFS Management |
-| **OPNsense** | 2 | 4 GB (Fixed) | Edge Firewall / Routing |
-| **TrueNAS** | 2 | 10 GB (Fixed) | Storage & SMB Shares |
-| **Debian** | 2 | 12 GB | Docker Host (Immich, Nextcloud) |
-| **Windows 11** | 3 | 12 GB | Vivado/Engineering Tools |
+High-resource VMs (Windows/Fedora) are treated as mutually exclusive to prevent CPU contention.
 
-*Note: Windows and Fedora instances remain powered off when not in active use to free up CPU cycles for the container stack.*
+| VM | vCPUs | CPU Units | RAM | Function |
+| :--- | :--- | :--- | :--- | :--- |
+| **Proxmox (Host)** | - | - | 2 GB | Hypervisor & ZFS ARC (Limited to 1GB) |
+| **OPNsense** | 2 | 4096 | 4 GB | Edge Firewall & Routing |
+| **TrueNAS** | 2 | 2048 | 10 GB | Storage (ZFS) |
+| **Debian** | 2 | 2048 | 12 GB | Docker Host (Immich, Nextcloud) |
+| **PBS (Backup)** | 2 | 1024 | 3 GB | Proxmox Backup Server |
+| **Windows 11*** | 3 | 6144 | 12 GB | Vivado/Engineering Tools |
+| **Fedora*** | 3 | 6144 | 15 GB | Linux Development Environment |
+
+*\*Windows 11 and Fedora are never run simultaneously.*
