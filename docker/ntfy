@@ -1,0 +1,23 @@
+services:
+  ntfy:
+    image: binwiederhier/ntfy
+    container_name: ntfy
+    command:
+      - serve
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - ntfy_net
+    environment:
+      - TZ=America/Chicago    # optional: set desired timezone
+    user: "1000:1000" # optional: replace with your own user/group or uid/gid
+    volumes:
+      - /home/surya/Docker/Ntfy/var:/var/cache/ntfy
+      - /home/surya/Docker/Ntfy/etc:/etc/ntfy
+    ports:
+      - 900:80
+    restart: unless-stopped
+
+networks:
+  ntfy_net:
+    external: true
