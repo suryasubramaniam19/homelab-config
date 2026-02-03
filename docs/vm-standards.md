@@ -8,7 +8,7 @@ To optimize performance on the HP EliteDesk hardware, I utilize specific virtual
 *   **Caching:** `SSD Emulation` and `Discard` enabled to support TRIMMing on the underlying SSDs.
 *   **Memory Ballooning:** Explicitly **DISABLED** for OPNsense and TrueNAS to ensure stable memory address allocation for PCI devices and ZFS ARC.
 
-## 2. TrueNAS Core (Storage Controller Passthrough)
+## 2. TrueNAS Scale (Storage Controller Passthrough)
 To grant TrueNAS direct access to the drives for ZFS safety:
 1.  **IOMMU Grouping:** Verified isolation of the SATA controller (`00:1f.2`) to ensure no interrupt conflicts.
 2.  **VFIO Configuration:**
